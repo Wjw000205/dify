@@ -23,23 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatPostClient {
-
-//    {
-//        "inputs": {},
-//        "query": "What are the specs of the iPhone 13 Pro Max?",
-//            "response_mode": "streaming",
-//            "conversation_id": "",
-//            "user": "abc-123",
-//            "files": [
-//        {
-//            "type": "image",
-//                "transfer_method": "remote_url",
-//                "url": "https://cloud.dify.ai/logo/logo-site.png"
-//        }
-//    ]
-//    }
-
-
     /**
      * 发送POST请求，请求体是JSON字符串，支持自定义请求头
      *

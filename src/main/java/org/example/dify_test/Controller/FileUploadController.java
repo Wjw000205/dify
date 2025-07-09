@@ -22,14 +22,6 @@ public class FileUploadController {
     // 单文件上传接口
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("user") String user,@RequestHeader("Authorization") String Authorization) {
-        // 判断是否为空
-//        if (file.isEmpty()) {
-//            return "上传失败：文件为空";
-//        }
-//
-//        // 目标保存路径（记得确保文件夹存在）
-//        String fileName = file.getOriginalFilename();
-//        System.out.println(fileName);
         try {
             String result = fileUploadService.uploadFile(file, Authorization,user);
             return ResponseEntity.ok(result);
