@@ -21,7 +21,7 @@ public class TaskServiceImp implements TaskService {
         keyMap.put(taskID, 0);
         try {
             String res = MultipartPostClient.postFileAndText(uploadUrl, file, user, Authorization);
-            System.out.println(res);
+//            System.out.println(res);
             //读取文件id
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(res);
@@ -31,7 +31,7 @@ public class TaskServiceImp implements TaskService {
             String chatRes = ChatPostClient.postJson(chatUrl, fileId, user, Authorization);
             keyMap.put(taskID,1);
             resMap.put(taskID,chatRes);
-            System.out.println(chatRes);
+//            System.out.println(chatRes);
         } catch (Exception e) {
             keyMap.put(taskID, -1);
             Thread.currentThread().interrupt();

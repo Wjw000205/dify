@@ -23,9 +23,6 @@ public class FileUploadServiceImp implements FileUploadService {
     //用于存储接口的状态，0表示未完成，1表示接口访问正常，-1表示接口访问异常
     public HashMap<String, Integer> keyMap = new HashMap<>();
 
-    //异步执行dify平台的api接口调用
-
-
     @Override
     public JSONObject uploadFile(MultipartFile file, String Authorization, String user) {
         String taskId = UUID.randomUUID().toString();
