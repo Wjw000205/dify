@@ -1,41 +1,57 @@
 package org.example.dify_test.Service.ServiceImp;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import net.minidev.json.JSONObject;
 import org.example.dify_test.Service.FileUploadService;
-import org.example.dify_test.Util.ChatPostClient;
-import org.example.dify_test.Util.MultipartPostClient;
-import org.springframework.http.ResponseEntity;
+import org.example.dify_test.Service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
 
 @Service
 public class FileUploadServiceImp implements FileUploadService {
 
-    @Override
-    public String uploadFile(MultipartFile file,String Authorization,String user) {
-        String uploadUrl = "https://dify.chenbingyuan.com/v1/files/upload";  // 可配置到 yml 中
-        String chatUrl = "https://dify.chenbingyuan.com/v1/chat-messages";
-        try {
-            String res =  MultipartPostClient.postFileAndText(uploadUrl, file, user,Authorization);
-            System.out.println(res);
-            //读取文件id
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(res);
-            String fileId = jsonNode.get("id").asText();
-//            System.out.println(fileId);
+    private TaskService taskService;
 
-            String chatRes = ChatPostClient.postJson(chatUrl,fileId,user,Authorization);
-            System.out.println(chatRes);
-            return chatRes;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    @Autowired
+    public FileUploadServiceImp(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    //用于临时存储接口返回的数据
+    public HashMap<String, String> resMap = new HashMap<>();
+    //用于存储接口的状态，0表示未完成，1表示接口访问正常，-1表示接口访问异常
+    public HashMap<String, Integer> keyMap = new HashMap<>();
+
+    //异步执行dify平台的api接口调用
+
+
+    @Override
+    public JSONObject uploadFile(MultipartFile file, String Authorization, String user) {
+        String taskId = UUID.randomUUID().toString();
+        taskService.runTask(file, Authorization, user, taskId, resMap, keyMap);
+        JSONObject res = new JSONObject();
+        res.put("taskId", taskId);
+        return res;
+    }
+
+    @Override
+    public JSONObject getTaskRes(String taskID) {
+        JSONObject res = new JSONObject();
+        Integer value = keyMap.get(taskID);
+        if(value!=null&&value==1){
+            res.put("state",1);
+            res.put("msg","数据查询成功");
+            res.put("result",resMap.get(taskID));
         }
+        else if(value!=null&&value==0){
+            res.put("state",0);
+            res.put("msg","报告正在生成，请稍后");
+        }
+        else{
+            res.put("state",-1);
+            res.put("msg","系统错误，请稍后重试");
+        }
+        return res;
     }
 }

@@ -1,12 +1,13 @@
 package org.example.dify_test.Controller;
 
+import net.minidev.json.JSONObject;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.example.dify_test.Service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.example.demo.common.Result;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,20 +22,18 @@ public class FileUploadController {
     }
     // 单文件上传接口
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("user") String user,@RequestHeader("Authorization") String Authorization) {
-        // 判断是否为空
-//        if (file.isEmpty()) {
-//            return "上传失败：文件为空";
-//        }
-//
-//        // 目标保存路径（记得确保文件夹存在）
-//        String fileName = file.getOriginalFilename();
-//        System.out.println(fileName);
+    public Result<JSONObject> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("user") String user, @RequestHeader("Authorization") String Authorization) {
         try {
-            String result = fileUploadService.uploadFile(file, Authorization,user);
-            return ResponseEntity.ok(result);
+            JSONObject result = fileUploadService.uploadFile(file, Authorization,user);
+            return Result.success(result);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("转发失败: " + e.getMessage());
+            return Result.fail("获取数据失败");
         }
+    }
+
+    @GetMapping("/results/{task_id}")
+    public Result<JSONObject> getTaskRes(@PathVariable("task_id") String taskID) {
+        JSONObject result = fileUploadService.getTaskRes(taskID);
+        return Result.success(result);
     }
 }
