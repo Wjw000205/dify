@@ -1,4 +1,4 @@
-package org.example.dify_test.Service.ServiceImp;;
+package org.example.dify_test.Service.ServiceImp;
 import org.example.dify_test.Service.FileUploadService;
 import org.example.dify_test.Service.TaskService;
 import com.alibaba.fastjson2.JSONObject;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 public class FileUploadServiceImp implements FileUploadService {
 
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @Autowired
     public FileUploadServiceImp(TaskService taskService) {
@@ -25,7 +25,7 @@ public class FileUploadServiceImp implements FileUploadService {
     public HashMap<String, Integer> keyMap = new HashMap<>();
 
     @Override
-    public com.alibaba.fastjson2.JSONObject uploadFile(Path file, String Authorization, String user) {
+    public JSONObject uploadFile(Path file, String Authorization, String user) {
         String taskId = UUID.randomUUID().toString();
         taskService.runTask(file, Authorization, user, taskId, resMap, keyMap);
         JSONObject res = new JSONObject();
