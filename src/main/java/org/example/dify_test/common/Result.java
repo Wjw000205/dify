@@ -1,4 +1,4 @@
-package com.example.demo.common;
+package org.example.dify_test.common;
 
 public class Result<T> {
     private Integer code;    // 状态码

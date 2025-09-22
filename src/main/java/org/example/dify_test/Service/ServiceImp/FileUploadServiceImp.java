@@ -1,10 +1,11 @@
-package org.example.dify_test.Service.ServiceImp;
-import net.minidev.json.JSONObject;
+package org.example.dify_test.Service.ServiceImp;;
 import org.example.dify_test.Service.FileUploadService;
 import org.example.dify_test.Service.TaskService;
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,12 +20,12 @@ public class FileUploadServiceImp implements FileUploadService {
     }
 
     //用于临时存储接口返回的数据
-    public HashMap<String, String> resMap = new HashMap<>();
+    public HashMap<String, JSONObject> resMap = new HashMap<>();
     //用于存储接口的状态，0表示未完成，1表示接口访问正常，-1表示接口访问异常
     public HashMap<String, Integer> keyMap = new HashMap<>();
 
     @Override
-    public JSONObject uploadFile(MultipartFile file, String Authorization, String user) {
+    public com.alibaba.fastjson2.JSONObject uploadFile(Path file, String Authorization, String user) {
         String taskId = UUID.randomUUID().toString();
         taskService.runTask(file, Authorization, user, taskId, resMap, keyMap);
         JSONObject res = new JSONObject();
